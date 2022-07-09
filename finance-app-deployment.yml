@@ -1,0 +1,43 @@
+apiVersion: apps/v1 #we know that all the communication in k8s happen through api. 
+#what we want to create
+#inside kind you need to define type of api you want to execute. 
+kind: Deployment #pod#service
+metadata: #using metada and name we define the name of deployment
+  name: app #a deployment name myapp-deployment is created using .metadata.name field
+  labels:
+    app: app
+spec: #inside your deployment we need to provide spec how this deployment api will launch your pod
+  replicas: 1 #it will create three pod
+  selector: #the .spec.selector file define ho the deployment find which pod to manage. 
+    matchLabels: #.spec.selector.matchlabel it is euqivalent to map ke,value. something called as match expression
+      app: app
+  
+  template: #container template deploy in three pod
+    metadata:
+      name: app   #using metadata name
+      labels: 
+        app: app  #this label should match with pod label. 
+    spec: #we define container spec
+        
+        containers:
+          - name: app  
+            image: "shraddha3112/docker-spring-boot-postgres:latest"
+            imagePullPolicy: Always
+            ports:
+              - containerPort: 8080
+                name: app 
+            env:
+              - name: SPRING_DATASOURCE_URL
+                value: db-service
+              - name: DB_PORT
+                value: "3306"
+              - name: DB_NAME 
+                value: "financedb"
+              - name: DB_USERNAME
+                value: "root"
+              - name: DB_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                #this two value come from mysqlsecret.yml 
+                    name: db-secret #this is the name of the secret
+                    key: db-password

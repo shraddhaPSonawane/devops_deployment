@@ -1,0 +1,8 @@
+apiVersion: v1 
+kind: ConfigMap
+metadata:
+  name: dbconfig
+data:
+  mysql_usermgmt.sql: |
+    DROP DATABASE IF EXISTS compose-postgres;
+    CREATE DATABASE compose-postgres;
